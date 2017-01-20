@@ -31,6 +31,8 @@ All patches are held in the `upstream` folder. They are then symlinked into vers
 	* Provided as a git submodule from <https://github.com/graysky2/kernel_gcc_patch.git>
 	* Patch itself then adjusted to work with MPSC by the developers of linux-patches
 	* Actual patch then at upstream
+* `musl-cross-make`
+	* Patches provided originally in the git repository at <https://github.com/richfelker/musl-cross-make>
 * `ours`
 	* Patch to `vdso.c` to use `stdbool.h`
 	* Patches created to support the musl c library. Inspired by work originally done by Sabotage Linux and Alpine Linux. 

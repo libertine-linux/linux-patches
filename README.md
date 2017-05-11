@@ -25,8 +25,11 @@ All patches are held in the `upstream` folder. They are then symlinked into vers
 * `grsecurity`: Contains grsecurity patches
 	 * Are only publically available for the latest stable kernel release. They are not necessarily available publically without subscription for the latest longterm kernel release
 	 * Alpine Linux maintains backports via their [aports package manager](git://git.alpinelinux.org/aports) in location `aports/main/linux-grsec/APKBUILD`
-		 * Alpine Linux patches may be available via URLs such as `http://dev.alpinelinux.org/~ncopa/grsec/grsecurity-3.1-4.4.36-201604252206-alpine.patch`
-		 * Sadly this URL is not secure
+		 * Alpine Linux patches may be available via URLs such as:-
+		 	 * `http://dev.alpinelinux.org/~ncopa/grsec/grsecurity-3.1-4.4.36-201604252206-alpine.patch`
+			 * `http://dev.alpinelinux.org/~ncopa/grsec/hardened-3.1-4.9.27-201704252333-alpine.patch`
+		 * Sadly these URLs are not secure
+		 * These URLs will eventually go away as grsecurity will no longer maintain public patches
 * `kernel_gcc_patch`
 	* Provided as a git submodule from <https://github.com/graysky2/kernel_gcc_patch.git>
 	* Patch itself then adjusted to work with MPSC by the developers of linux-patches

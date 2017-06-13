@@ -17,6 +17,7 @@ All patches are held in the `upstream` folder. They are then symlinked into vers
 
 * `alpine-linux`: Patches from Alpine Linux's aports git repository
 * `bfq`: Budget Fair Queuing (BFQ) disk scheduler patches
+	* ***NOT SUPPORTED on Linux 4.9 and so NOT USED***
 	* Downloaded from <http://algo.ing.unimo.it/people/paolo/disk_sched/patches>
 * `ck1`: Contains the Brain Fuck Scheduler (BFS) and other Con Kolivas patches
 	* ***NOT COMPATIBLE with current grsecurity and so NOT USED***

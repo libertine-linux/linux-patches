@@ -1,0 +1,89 @@
+#
+# RTE (DPDK) device configuration
+#
+
+config NET_VENDOR_RTE
+	bool "RTE (DPDK) devices"
+	default y
+	depends on PCI
+	---help---
+	  If you have a network (Ethernet) card belonging to this class, say Y.
+
+	  Note that the answer to this question doesn't directly affect the
+	  kernel: saying N will just cause the configurator to skip all
+	  the questions about RTE (DPDK) devices. If you say Y, you will be asked for
+	  your specific card in the following questions.
+
+if NET_VENDOR_RTE
+
+config RTE_EAL_IGB_UIO
+	tristate "RTE (DPDK) IGB UIO module"
+	default y
+	depends on PCI
+	---help---
+	  This driver is the RTE (DPDK) IGB UIO module `igb_uio`.
+
+	  To compile this driver as a module, choose M here.
+
+config RTE_LIBRTE_XEN_DOM0
+	tristate "RTE (DPDK) Xen Dom 0 module"
+	default n
+	depends on PCI
+	---help---
+	  This driver is the RTE (DPDK) Xen Dom0 module `rte_dom0_mm`.
+
+	  To compile this driver as a module, choose M here.
+
+config RTE_KNI_KMOD
+	tristate "RTE (DPDK) KNI module"
+	default y
+	depends on PCI
+	---help---
+	  This driver is the RTE (DPDK) KNI module `rte_kni`.
+
+	  To compile this driver as a module, choose M here.
+
+if RTE_KNI_KMOD
+
+config RTE_KNI_PREEMPT_DEFAULT
+	bool "RTE (DPDK) KNI module prempt"
+	default y
+	depends on RTE_KNI_KMOD
+	---help---
+	  Defaults to y. Does not seem to affect anything.
+
+config RTE_KNI_VHOST
+	bool "RTE (DPDK) KNI module VHOST support"
+	default y
+	depends on RTE_KNI_KMOD
+	---help---
+	  Enables support for VHOST
+
+if RTE_KNI_VHOST
+
+config RTE_KNI_VHOST_MAX_CACHE_SIZE
+	int "RTE (DPDK) KNI module VHOST cache size"
+	default 1024
+	depends on RTE_KNI_VHOST
+	---help---
+	  Cache size for RTE (DPDK) VHOST support
+
+config RTE_KNI_VHOST_VNET_HDR_EN
+	bool "RTE (DPDK) KNI module VHOST header ethernet"
+	default n
+	depends on RTE_KNI_VHOST
+	---help---
+	  Defaults to n
+
+endif # RTE_KNI_VHOST
+
+config CONFIG_RTE_KNI_KMOD_ETHTOOL
+	bool "RTE (DPDK) KNI module ethtool support"
+	default y
+	depends on RTE_KNI_KMOD
+	---help---
+	  Enables support for ethtool
+
+endif # RTE_KNI_KMOD
+
+endif # NET_VENDOR_RTE

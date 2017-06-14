@@ -122,12 +122,16 @@ create_patches_assertProgramIsPresent()
 
 create_patches_create()
 {
-	create_patches_assertProgramIsPresent diff
+	create_patches_assertProgramIsPresent diff find xargs rm
+	
 	
 	cd "$upstreamPatchesFolderPath" 1>/dev/null 2>/dev/null
+		
+		# Remove NFS files that Mac OS X can insert
+		find . -name '._*' | xargs rm
 	
 		set +e
-			diff -u -r 1-after-hardening 2-our-changes
+			diff -N -u -r 1-after-hardening 2-our-changes
 			local exitCode=$?
 		set -e
 		
@@ -174,30 +178,30 @@ create_patches_main()
 						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath' is not writable"
 					fi
 					
-					if [ ! -d "$upstreamPatchesFolderPath"/original ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/original' does not exist or is not a directory"
+					if [ ! -d "$upstreamPatchesFolderPath"/1-after-hardening ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/1-after-hardening' does not exist or is not a directory"
 					fi
-					if [ ! -r "$upstreamPatchesFolderPath"/original ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/original' is not readable"
+					if [ ! -r "$upstreamPatchesFolderPath"/1-after-hardening ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/1-after-hardening' is not readable"
 					fi
-					if [ ! -x "$upstreamPatchesFolderPath"/original ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/original' is not searchable"
+					if [ ! -x "$upstreamPatchesFolderPath"/1-after-hardening ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/1-after-hardening' is not searchable"
 					fi
-					if [ ! -w "$upstreamPatchesFolderPath"/original ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/original' is not writable"
+					if [ ! -w "$upstreamPatchesFolderPath"/1-after-hardening ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/1-after-hardening' is not writable"
 					fi
 					
-					if [ ! -d "$upstreamPatchesFolderPath"/updated ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/updated' does not exist or is not a directory"
+					if [ ! -d "$upstreamPatchesFolderPath"/2-our-changes ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/2-our-changes' does not exist or is not a directory"
 					fi
-					if [ ! -r "$upstreamPatchesFolderPath"/updated ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/updated' is not readable"
+					if [ ! -r "$upstreamPatchesFolderPath"/2-our-changes ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/2-our-changes' is not readable"
 					fi
-					if [ ! -x "$upstreamPatchesFolderPath"/updated ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/updated' is not searchable"
+					if [ ! -x "$upstreamPatchesFolderPath"/2-our-changes ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/2-our-changes' is not searchable"
 					fi
-					if [ ! -w "$upstreamPatchesFolderPath"/updated ]; then
-						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/updated' is not writable"
+					if [ ! -w "$upstreamPatchesFolderPath"/2-our-changes ]; then
+						create_patches_error "LINUX_VERSION '$LINUX_VERSION' pointing to '$upstreamPatchesFolderPath/2-our-changes' is not writable"
 					fi
 				;;
 				

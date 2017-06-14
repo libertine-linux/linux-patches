@@ -1,4 +1,4 @@
 [submodule "upstream/kernel-gcc-patch-adjusted-for-MPSC/kernel_gcc_patch"]
-	path = upstream/kernel-gcc-patch-adjusted-for-MPSC/kernel_gcc_patch
+	path = upstream/kernel-architecture-optimizations/kernel_gcc_patch
 	url = https://github.com/graysky2/kernel_gcc_patch.git
 	branch = master

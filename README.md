@@ -8,41 +8,40 @@
 
 ## Applicable Linux Version
 
-Applicable Linux versions are modelled as folders in `patches/` and identify threefold versions, eg `4.4.35`. If a version isn't there, it isn't applicable.
+Applicable Linux versions are modelled as folders in `patches/LINUX_VERSION` and identify threefold versions, eg `4.9.31` for `LINUX_VERSION`. If a version isn't there, it isn't applicable.
+
+## Order of Application
+
+The `grsecurity` patch is applied first, followed by `ours`, then by any remaining third-party patches in `patches/LINUX_VERSION`.
+
+The patch `ours` is generated automatically by `upstream/ours/create-our-patch` from files in `upstream/ours/LINUX_VERSION`.
 
 
 ## Patches
 
-All patches are held in the `upstream` folder. They are then symlinked into version folders (eg `4.4.35`) under `patches`. They are then name prefixed `NNN-ORIGIN-`, with NNN a three digit number and ORIGIN on e of the values below. This approach ensures patches are applied in shell glob expansion order.
+All patches are held in the `upstream` folder. They are then symlinked into version folders (eg `4.4.35`) under `patches`. They are then name prefixed `NNN-ORIGIN-`, with NNN a three digit number and ORIGIN one of the values below. This approach ensures patches are applied in shell glob expansion order. Patches for `grsecurity` and `ours` are applied before these patches.
 
-* `alpine-linux`: Patches from Alpine Linux's aports git repository
-* `bfq`: Budget Fair Queuing (BFQ) disk scheduler patches
-	* ***NOT SUPPORTED on Linux 4.9 and so NOT USED***
-	* Downloaded from <http://algo.ing.unimo.it/people/paolo/disk_sched/patches>
-* `ck1`: Contains the Brain Fuck Scheduler (BFS) and other Con Kolivas patches
-	* ***NOT COMPATIBLE with current grsecurity and so NOT USED***
-	* Downloaded from <http://ck.kolivas.org/patches/4.0/4.4/4.4-ck1/patch-4.4-ck1.xz>
-	* `mkdir -m 0755 -p patches/ck1; wget -q -O - http://ck.kolivas.org/patches/4.0/4.4/4.4-ck1/patch-4.4-ck1.xz | unxz >patches/ck1/patch-4.4-ck1.patch`
-* `grsecurity`: Contains grsecurity patches
-	 * Are only publically available for the latest stable kernel release. They are not necessarily available publically without subscription for the latest longterm kernel release
-	 * Alpine Linux maintains backports via their [aports package manager](git://git.alpinelinux.org/aports) in location `aports/main/linux-grsec/APKBUILD`
-		 * Alpine Linux patches may be available via URLs such as:-
-		 	 * `http://dev.alpinelinux.org/~ncopa/grsec/grsecurity-3.1-4.4.36-201604252206-alpine.patch`
-			 * `http://dev.alpinelinux.org/~ncopa/grsec/hardened-3.1-4.9.27-201704252333-alpine.patch`
-		 * Sadly these URLs are not secure
-		 * These URLs will eventually go away as grsecurity will no longer maintain public patches
-* `kernel_gcc_patch`
-	* Provided as a git submodule from <https://github.com/graysky2/kernel_gcc_patch.git>
-	* Patch itself then adjusted to work with MPSC by the developers of linux-patches
-	* Actual patch then at upstream
-* `musl-cross-make`
-	* Patches provided originally in the git repository at <https://github.com/richfelker/musl-cross-make>
-* `ours`
-	* Patch to `vdso.c` to use `stdbool.h`
-	* Patches created to support the musl c library. Inspired by work originally done by Sabotage Linux and Alpine Linux. 
+We are aware of patches for the Budget Fair Queuing ([BFQ](http://algo.ing.unimo.it/people/paolo/disk_sched/patches)) disk scheduler and Con Kolivas' [cq1](http://ck.kolivas.org/patches/4.0/4.4/4.4-ck1/patch-4.4-ck1.xz) patches (the Brain Fuck Scheduler (BFS) and others) but these are not currently compatible with grsecurity.
+
+
+### `ours` patch
+
+* Fixes to support musl
+	* We have incorporated a patch for Linux 4.4.10, `0001-archscripts.diff` from [musl-cross-make](https://github.com/richfelker/musl-cross-make) into ours
+	* We patch `vdso2c.c` to include `stdbool.h`
+		* Inspired by work originally done by Sabotage Linux and Alpine Linux.
+	* We patch various exported Linux kernel headers to support musl, particularly for compiling BusyBox
+		* Inspired by work originally done by Sabotage Linux and Alpine Linux.
+* Fixes to support hardening
+	* We apply a 'default PIE' adjusted gcc setting so that the default GCC can be static PIE hardened
+		* Inspired by work originally done by Sabotage Linux and Alpine Linux.
+* Fixes to optimise compilation for modern 64-bit x85 CPUs
+	* We make changes that are broadly the same as graysky's [kernel_gcc_patch](https://github.com/graysky2/kernel_gcc_patch.git)
+	* We have adjusted these to work with grsecurity
+
 
 ## Licensing
 
-The license for this project is MIT. Individual patches may be licensed differently. The patches in `musl/` are part of this project.
+The license for this project is MIT. The grsecurity patch is currently GPL 2.
 
 [linux-patches]: https://github.com/libertine-linux/linux-patches "linux-patches GitHub page"

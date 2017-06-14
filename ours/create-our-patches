@@ -128,7 +128,7 @@ create_patches_create()
 	cd "$upstreamPatchesFolderPath" 1>/dev/null 2>/dev/null
 		
 		# Remove NFS files that Mac OS X can insert
-		find . -name '._*' | xargs rm
+		find . -name '._*' -print0 | xargs -0 -r rm
 	
 		set +e
 			diff -N -u -r 1-after-hardening 2-our-changes

@@ -150,7 +150,7 @@ apply_patches_findLinuxVersion()
 
 apply_patches_generateOursPatch()
 {
-	local oursFolderPath="$ourFolderPath"/upstream/ours
+	local oursFolderPath="$ourFolderPath"/ours
 	
 	local oursVersionFolderPath="$oursFolderPath"/"$apply_patches_linuxVersion"
 	
@@ -159,48 +159,50 @@ apply_patches_generateOursPatch()
 	fi
 	
 	"$oursFolderPath"/create-our-patches "$apply_patches_linuxVersion"
+}
+
+apply_patches_patchUsingFile()
+{
+	local patchFile="$1"
 	
-	if [ -s "$oursVersionFolderPath"/ours.patch ]; then
-		apply_patches_assertProgramIsPresent rm ln
-		
-		local symlinkPath="$absoluteVersionFolderPath"/000-ours-ours.patch
-		rm -rf "$symlinkPath"
-		ln -s ../../upstream/ours/"$apply_patches_linuxVersion"/ours.patch "$symlinkPath"
+	apply_patches_message "PATCHING using '$patchFile'"
+	set +e
+		patch -p1 -i "$patchFile" 1>&2
+		local exitCode=$?
+	set -e
+
+	if [ $exitCode -ne 0 ]; then
+		apply_patches_error "FAILED"
+	else
+		apply_patches_message "SUCCEEDED"
 	fi
 }
 
 apply_patches_execute()
 {
 	apply_patches_assertProgramIsPresent patch
-	
+		
 	cd "$absoluteLinuxFolderPath" 1>/dev/null 2>/dev/null
 		
-		local afterFirst=false
+		# (1) Harden
+		apply_patches_patchUsingFile "$absoluteVersionFolderPath"/1-hardening.patch
+		
+		# (2) Apply our patches
+		apply_patches_generateOursPatch >"$absoluteVersionFolderPath"/2-ours.patch
+		apply_patches_patchUsingFile "$absoluteVersionFolderPath"/2-ours.patch
+		
+		# (3) Apply third party patches
 		local patchFile
 		set +f
-		for patchFile in "$absoluteVersionFolderPath"/*.patch
+		for patchFile in "$absoluteVersionFolderPath"/after-ours/*.patch
 		do
 			set -f
+			
 			if [ ! -f "$patchFile" ]; then
 				continue
 			fi
-		
-			if $afterFirst; then
-				apply_patches_message ''
-			else
-				afterFirst=true
-			fi
-			apply_patches_message "PATCHING using '$patchFile'"
-			set +e
-				patch -p1 -i "$patchFile" 1>&2
-				local exitCode=$?
-			set -e
-
-			if [ $exitCode -ne 0 ]; then
-				apply_patches_error "FAILED"
-			else
-				apply_patches_message "SUCCEEDED"
-			fi
+			
+			apply_patches_patchUsingFile "$patchFile"
 		done
 		set -f
 		

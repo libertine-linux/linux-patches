@@ -180,7 +180,7 @@ apply_patches_patchUsingFile()
 
 apply_patches_execute()
 {
-	apply_patches_assertProgramIsPresent patch
+	apply_patches_assertProgramIsPresent patch rm
 		
 	cd "$absoluteLinuxFolderPath" 1>/dev/null 2>/dev/null
 		
@@ -188,8 +188,9 @@ apply_patches_execute()
 		apply_patches_patchUsingFile "$absoluteVersionFolderPath"/1-hardening.patch
 		
 		# (2) Apply our patches
-		apply_patches_generateOursPatch >"$absoluteVersionFolderPath"/2-ours.patch
-		apply_patches_patchUsingFile "$absoluteVersionFolderPath"/2-ours.patch
+		apply_patches_generateOursPatch >./2-ours.patch
+		apply_patches_patchUsingFile ./2-ours.patch
+		rm ./2-ours.patch
 		
 		# (3) Apply third party patches
 		local patchFile
